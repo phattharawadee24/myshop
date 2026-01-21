@@ -146,11 +146,16 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
     'https://localhost:3000',
     'http://localhost:8000',
+    'http://127.0.0.1:8000',
 ]
 
-SECURE_SSL_REDIRECT = False if DEBUG else False
-SESSION_COOKIE_SECURE = False if DEBUG else False
-CSRF_COOKIE_SECURE = False if DEBUG else False
+# Disable HSTS for development
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
