@@ -122,7 +122,7 @@ python manage.py runserver
 
 ### เข้าสู่ระบบ
 1. ไปที่หน้า `http://127.0.0.1:8000/login/`
-2. ใส่ชื่อผู้ใช้และรหัสผ่านที่สร้างไว้
+2. ใส่ชื่อผู้ใช้: **admin** และรหัสผ่าน: **Admin@12345**
 
 ### 📱 เมนูหลัก
 - **Dashboard** - แสดงสรุปข้อมูลประจำวัน
@@ -136,7 +136,43 @@ python manage.py runserver
 
 ---
 
-## 📁 โครงสร้างโปรเจกต์
+## ⚡ วิธีการเริ่มต้นอย่างรวดเร็ว (Quick Start)
+
+### Windows:
+```bash
+# 1. Clone หรือ cd ไปที่โปรเจกต์
+cd c:\programming\myshop
+
+# 2. รัน setup script (ครั้งแรกเท่านั้น)
+setup.bat
+
+# 3. รัน development server
+run.bat
+```
+
+### macOS / Linux:
+```bash
+# 1. Clone หรือ cd ไปที่โปรเจกต์
+cd myshop
+
+# 2. สร้าง virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. ติดตั้ง dependencies
+pip install -r requirements.txt
+
+# 4. Run migrations
+python manage.py migrate
+
+# 5. สร้าง admin
+python manage.py createsuperuser
+
+# 6. รัน server
+python manage.py runserver
+```
+
+ตอนนี้เข้าที่ http://127.0.0.1:8000 ได้แล้ว! 🎉
 
 ```
 myshop/
@@ -257,7 +293,44 @@ http://127.0.0.1:8000/admin/
 
 ---
 
-## 🐛 แก้ไขปัญหาทั่วไป
+## 🌐 Deploy ไปที่ Vercel
+
+### ขั้นตอน Deploy:
+
+1. **Push ไป GitHub**
+```bash
+git add .
+git commit -m "Ready for Vercel deployment"
+git push -u origin main
+```
+
+2. **เข้า Vercel Dashboard**
+- ไปที่ https://vercel.com
+- คลิก "Add New" → "Project"
+- เลือก Repository ของคุณ
+
+3. **ตั้งค่า Environment Variables**
+ใน Vercel Dashboard เพิ่ม:
+```
+SECRET_KEY=your-secret-key-here
+DEBUG=False
+ALLOWED_HOSTS=.vercel.app,localhost
+```
+
+4. **Deploy**
+- Vercel จะ auto-deploy เมื่อ push ไป main branch
+- ตรวจสอบ Deployments tab
+
+### หลังจาก Deploy:
+
+```bash
+# สั่ง migrate บน production (ถ้าจำเป็น)
+# ผ่าน Vercel Dashboard → Settings → Functions
+```
+
+---
+
+## 🔍 Troubleshooting
 
 ### ปัญหา: "ModuleNotFoundError: No module named 'django'"
 **วิธีแก้:** ตรวจสอบว่า virtual environment ถูกเปิดใช้งาน
@@ -277,6 +350,19 @@ python manage.py migrate
 ```bash
 python manage.py collectstatic
 ```
+
+### ปัญหา: Vercel Deploy ล้มเหลว
+**วิธีแก้:**
+1. ตรวจสอบ `vercel.json` configuration
+2. ตรวจสอบ Environment Variables ใน Vercel Dashboard
+3. ดู Build logs ใน Vercel Dashboard
+4. ตรวจสอบ `SECRET_KEY` ตั้งค่าถูกต้อง
+
+### ปัญหา: 404 Not Found ใน Vercel
+**วิธีแก้:**
+1. ตรวจสอบ ALLOWED_HOSTS ใน settings.py
+2. ตรวจสอบ routes ใน vercel.json
+3. รีสตาร์ท deployment
 
 ---
 
