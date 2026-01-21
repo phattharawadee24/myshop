@@ -9,27 +9,35 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from .models import *
 from .forms import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 # ==================== Authentication Views ====================
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'ยินดีต้อนรับ {username}')
-                return redirect('dashboard')
+    try:
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+        
+        if request.method == 'POST':
+            form = AuthenticationForm(request, data=request.POST)
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    messages.success(request, f'ยินดีต้อนรับ {username}')
+                    return redirect('dashboard')
+            else:
+                messages.error(request, 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
         else:
-            messages.error(request, 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+            form = AuthenticationForm()
+        return render(request, 'login.html', {'form': form})
+    except Exception as e:
+        logger.error(f"Login error: {str(e)}", exc_info=True)
+        messages.error(request, 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ')
+        return render(request, 'login.html', {'form': AuthenticationForm()})
 
 def logout_view(request):
     logout(request)
