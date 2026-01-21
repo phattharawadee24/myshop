@@ -20,9 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponse
 
-    
-def home(request):
-    return HttpResponse("Hello Vercel")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
