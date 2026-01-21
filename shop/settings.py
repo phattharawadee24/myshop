@@ -47,14 +47,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'shop.urls'
@@ -132,9 +131,10 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+# Only add staticfiles_dirs if the directory exists
+STATICFILES_DIRS = []
+if os.path.exists(os.path.join(BASE_DIR, "static")):
+    STATICFILES_DIRS.append(os.path.join(BASE_DIR, "static"))
 
 # WhiteNoise Settings
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -146,11 +146,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
     'https://localhost:3000',
+    'http://localhost:8000',
 ]
 
-SECURE_SSL_REDIRECT = False if DEBUG else True
-SESSION_COOKIE_SECURE = False if DEBUG else True
-CSRF_COOKIE_SECURE = False if DEBUG else True
+SECURE_SSL_REDIRECT = False if DEBUG else False
+SESSION_COOKIE_SECURE = False if DEBUG else False
+CSRF_COOKIE_SECURE = False if DEBUG else False
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
