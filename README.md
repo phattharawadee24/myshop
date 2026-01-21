@@ -311,19 +311,6 @@ python manage.py collectstatic
 
 ---
 
-## 📄 ลิขสิทธิ์
-
-โปรเจกต์นี้ได้รับอนุญาตภายใต้ MIT License
-
----
-
-## 📞 ติดต่อสอบถาม
-
-สำหรับคำถามหรือข้อเสนอแนะ กรุณาติดต่อ:
-- Email: support@myshop.local
-- Issues: เปิด Issue ในระบบ
-
----
 
 **ขอบคุณที่ใช้ MyShop! 🙏**
 
