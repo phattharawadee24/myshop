@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}รายงานรายปี - ระบบจัดการร้านขายของชำ{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-bar"></i> รายงานรายปี {{ year }}</h2>
+    <a href="{% url 'report_monthly' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> กลับ
+    </a>
+</div>
+
+<!-- สรุปรายรับรายจ่าย -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-success">รายได้</h5>
+                <h3 class="text-success">฿{{ total_revenue|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-danger">ต้นทุน</h5>
+                <h3 class="text-danger">฿{{ total_cost|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-warning">รายจ่าย</h5>
+                <h3 class="text-warning">฿{{ total_expense|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-info">กำไร</h5>
+                <h3 class="text-info">฿{{ profit|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- รายงานรายเดือน -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">ข้อมูลรายเดือน</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>เดือน</th>
+                        <th>รายได้</th>
+                        <th>ต้นทุน</th>
+                        <th>รายจ่าย</th>
+                        <th>กำไร</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in monthly_data %}
+                    <tr>
+                        <td>
+                            {% if data.month == 1 %}มกราคม
+                            {% elif data.month == 2 %}กุมภาพันธ์
+                            {% elif data.month == 3 %}มีนาคม
+                            {% elif data.month == 4 %}เมษายน
+                            {% elif data.month == 5 %}พฤษภาคม
+                            {% elif data.month == 6 %}มิถุนายน
+                            {% elif data.month == 7 %}กรกฎาคม
+                            {% elif data.month == 8 %}สิงหาคม
+                            {% elif data.month == 9 %}กันยายน
+                            {% elif data.month == 10 %}ตุลาคม
+                            {% elif data.month == 11 %}พฤศจิกายน
+                            {% elif data.month == 12 %}ธันวาคม
+                            {% endif %}
+                        </td>
+                        <td>฿{{ data.revenue|floatformat:2 }}</td>
+                        <td>฿{{ data.cost|floatformat:2 }}</td>
+                        <td>฿{{ data.expense|floatformat:2 }}</td>
+                        <td class="{% if data.profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            ฿{{ data.profit|floatformat:2 }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - ระบบจัดการร้านขายของชำ{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-cash-register"></i> {{ title }}</h2>
+    <a href="{% url 'sale_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> กลับ
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            
+            <div class="mb-3">
+                <label class="form-label">{{ form.sale_date.label }}</label>
+                {{ form.sale_date }}
+                {% if form.sale_date.errors %}
+                    <div class="invalid-feedback d-block">{{ form.sale_date.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">{{ form.customer_name.label }}</label>
+                {{ form.customer_name }}
+                {% if form.customer_name.errors %}
+                    <div class="invalid-feedback d-block">{{ form.customer_name.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ form.discount.label }}</label>
+                    {{ form.discount }}
+                    {% if form.discount.errors %}
+                        <div class="invalid-feedback d-block">{{ form.discount.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ form.payment_method.label }}</label>
+                    {{ form.payment_method }}
+                    {% if form.payment_method.errors %}
+                        <div class="invalid-feedback d-block">{{ form.payment_method.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">{{ form.note.label }}</label>
+                {{ form.note }}
+                {% if form.note.errors %}
+                    <div class="invalid-feedback d-block">{{ form.note.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> บันทึก</button>
+                <a href="{% url 'sale_list' %}" class="btn btn-secondary"><i class="fas fa-times"></i> ยกเลิก</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}หน้าหลัก - ระบบจัดการร้านขายของชำ{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-home"></i> หน้าหลัก</h2>
+
+<!-- สรุปข้อมูลวันนี้ -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <h3>฿{{ today_revenue|floatformat:2 }}</h3>
+            <p><i class="fas fa-money-bill-wave"></i> ยอดขายวันนี้</p>
+            <small>{{ today_sales_count }} รายการ</small>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <h3>฿{{ month_revenue|floatformat:2 }}</h3>
+            <p><i class="fas fa-chart-line"></i> ยอดขายเดือนนี้</p>
+        </div>
+    </div>
+</div>
+
+<!-- สรุปรายรับรายจ่ายเดือนนี้ -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-success">รายได้</h5>
+                <h3 class="text-success">฿{{ month_revenue|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-danger">ต้นทุน</h5>
+                <h3 class="text-danger">฿{{ month_cost|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-warning">รายจ่าย</h5>
+                <h3 class="text-warning">฿{{ month_expense_total|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-primary">กำไร</h5>
+                <h3 class="{% if month_profit >= 0 %}text-primary{% else %}text-danger{% endif %}">
+                    ฿{{ month_profit|floatformat:2 }}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- สินค้าใกล้หมด -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-exclamation-triangle"></i> สินค้าใกล้หมด
+            </div>
+            <div class="card-body">
+                {% if low_stock_products %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>สินค้า</th>
+                                <th>คงเหลือ</th>
+                                <th>ขั้นต่ำ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in low_stock_products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td class="text-danger">{{ product.stock_quantity }} {{ product.unit }}</td>
+                                <td>{{ product.min_stock }} {{ product.unit }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">ไม่มีสินค้าใกล้หมด</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- สินค้าขายดี -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-fire"></i> สินค้าขายดี
+            </div>
+            <div class="card-body">
+                {% if top_products %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>สินค้า</th>
+                                <th>ยอดขาย</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in top_products %}
+                            {% if product.total_sold %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.total_sold|default:0 }} {{ product.unit }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">ยังไม่มีข้อมูลการขาย</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- รายการขายล่าสุด -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-receipt"></i> รายการขายล่าสุด</span>
+                <a href="{% url 'sale_create' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus"></i> ขายสินค้า
+                </a>
+            </div>
+            <div class="card-body">
+                {% if recent_sales %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>เลขที่ใบเสร็จ</th>
+                                <th>วันที่</th>
+                                <th>ลูกค้า</th>
+                                <th>ยอดรวม</th>
+                                <th>การชำระเงิน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in recent_sales %}
+                            <tr>
+                                <td><a href="{% url 'sale_detail' sale.pk %}">{{ sale.sale_number }}</a></td>
+                                <td>{{ sale.sale_date|date:"d/m/Y H:i" }}</td>
+                                <td>{{ sale.customer_name|default:"-" }}</td>
+                                <td>฿{{ sale.net_amount|floatformat:2 }}</td>
+                                <td>
+                                    {% if sale.payment_method == 'cash' %}เงินสด
+                                    {% elif sale.payment_method == 'transfer' %}โอนเงิน
+                                    {% else %}บัตรเครดิต{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">ยังไม่มีรายการขาย</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

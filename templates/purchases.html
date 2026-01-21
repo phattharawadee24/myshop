@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}นำเข้าสินค้า - ระบบจัดการร้านขายของชำ{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-shopping-cart"></i> นำเข้าสินค้า</h2>
+    <a href="{% url 'purchase_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> สร้างใบสั่งซื้อ
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>เลขที่ใบสั่งซื้อ</th>
+                        <th>วันที่</th>
+                        <th>ผู้จัดจำหน่าย</th>
+                        <th>ยอดรวม</th>
+                        <th>สถานะ</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.purchase_number }}</td>
+                        <td>{{ purchase.purchase_date|date:"d/m/Y" }}</td>
+                        <td>{{ purchase.supplier.name }}</td>
+                        <td>฿{{ purchase.total_amount|floatformat:2 }}</td>
+                        <td>
+                            {% if purchase.status == 'pending' %}
+                                <span class="badge bg-warning">รอรับสินค้า</span>
+                            {% elif purchase.status == 'received' %}
+                                <span class="badge bg-success">รับสินค้าแล้ว</span>
+                            {% else %}
+                                <span class="badge bg-danger">ยกเลิก</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'purchase_detail' purchase.pk %}" class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i> ดู
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            <i class="fas fa-inbox"></i> ไม่มีข้อมูล
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ purchase.date|date:"d/m/Y" }}</td>
+                        <td>{{ purchase.supplier.name }}</td>
+                        <td class="amount text-success">
+                            ฿{{ purchase.total_amount }}
+                        </td>
+                        <td>{{ purchase.note|default:"-" }}</td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-info">
+                                View
+                            </a>
+                            <a href="#" class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
+                            <a href="#" class="btn btn-sm btn-danger"
+                               onclick="return confirm('Delete this purchase?');">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No purchases found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

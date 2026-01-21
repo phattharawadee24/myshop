@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}รายงานรายเดือน - ระบบจัดการร้านขายของชำ{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-bar"></i> รายงานรายเดือน</h2>
+    <a href="{% url 'report_monthly' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> กลับ
+    </a>
+</div>
+
+<!-- สรุปรายรับรายจ่าย -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-success">รายได้</h5>
+                <h3 class="text-success">฿{{ total_revenue|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-danger">ต้นทุน</h5>
+                <h3 class="text-danger">฿{{ total_cost|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-warning">รายจ่าย</h5>
+                <h3 class="text-warning">฿{{ total_expense|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-info">กำไร</h5>
+                <h3 class="text-info">฿{{ profit|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- รายงานตามวัน -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">ยอดขายรายวัน</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>วันที่</th>
+                        <th>จำนวนใบเสร็จ</th>
+                        <th>ยอดขาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in daily_sales %}
+                    <tr>
+                        <td>{{ day.day|date:"d/m/Y" }}</td>
+                        <td>{{ day.count }}</td>
+                        <td>฿{{ day.total|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">ไม่มีข้อมูล</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- รายจ่ายตามประเภท -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">รายจ่ายตามประเภท</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ประเภท</th>
+                        <th>จำนวนเงิน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in expense_by_category %}
+                    <tr>
+                        <td>
+                            {% if item.category == 'utilities' %}
+                                ค่าน้ำ-ค่าไฟ
+                            {% elif item.category == 'rent' %}
+                                ค่าเช่า
+                            {% elif item.category == 'salary' %}
+                                เงินเดือน
+                            {% elif item.category == 'maintenance' %}
+                                ค่าซ่อมบำรุง
+                            {% else %}
+                                อื่นๆ
+                            {% endif %}
+                        </td>
+                        <td>฿{{ item.total|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">ไม่มีข้อมูล</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

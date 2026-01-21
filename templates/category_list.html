@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}หมวดหมู่ - ระบบจัดการร้านขายของชำ{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-tags"></i> หมวดหมู่สินค้า</h2>
+    <a href="{% url 'category_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> เพิ่มหมวดหมู่
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ชื่อหมวดหมู่</th>
+                        <th>รายละเอียด</th>
+                        <th>วันที่สร้าง</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ category.name }}</td>
+                        <td>{{ category.description|truncatewords:10 }}</td>
+                        <td>{{ category.created_at|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            <i class="fas fa-inbox"></i> ไม่มีข้อมูล
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}รายงาน - ระบบจัดการร้านขายของชำ{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-chart-bar"></i> รายงาน</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">รายงานรายเดือน</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" action="{% url 'report_monthly' %}">
+                    <div class="mb-3">
+                        <label class="form-label">ปี</label>
+                        <select name="year" class="form-control">
+                            {% for y in 2020,2021,2022,2023,2024,2025,2026 %}
+                            <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">เดือน</label>
+                        <select name="month" class="form-control">
+                            <option value="1" {% if month == 1 %}selected{% endif %}>มกราคม</option>
+                            <option value="2" {% if month == 2 %}selected{% endif %}>กุมภาพันธ์</option>
+                            <option value="3" {% if month == 3 %}selected{% endif %}>มีนาคม</option>
+                            <option value="4" {% if month == 4 %}selected{% endif %}>เมษายน</option>
+                            <option value="5" {% if month == 5 %}selected{% endif %}>พฤษภาคม</option>
+                            <option value="6" {% if month == 6 %}selected{% endif %}>มิถุนายน</option>
+                            <option value="7" {% if month == 7 %}selected{% endif %}>กรกฎาคม</option>
+                            <option value="8" {% if month == 8 %}selected{% endif %}>สิงหาคม</option>
+                            <option value="9" {% if month == 9 %}selected{% endif %}>กันยายน</option>
+                            <option value="10" {% if month == 10 %}selected{% endif %}>ตุลาคม</option>
+                            <option value="11" {% if month == 11 %}selected{% endif %}>พฤศจิกายน</option>
+                            <option value="12" {% if month == 12 %}selected{% endif %}>ธันวาคม</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> ดูรายงาน
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">รายงานรายปี</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" action="{% url 'report_yearly' %}">
+                    <div class="mb-3">
+                        <label class="form-label">ปี</label>
+                        <select name="year" class="form-control">
+                            {% for y in 2020,2021,2022,2023,2024,2025,2026 %}
+                            <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> ดูรายงาน
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+                        ฿{{ total_expenses|default:"0.00" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-summary shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="text-warning">Purchases</h5>
+                    <div class="amount text-warning">
+                        ฿{{ total_purchases|default:"0.00" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-summary shadow-sm text-center">
+                <div class="card-body">
+                    <h5>Net Profit</h5>
+                    <div class="amount 
+                        {% if net_profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        ฿{{ net_profit|default:"0.00" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Table -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <strong>Daily Summary</strong>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Sales</th>
+                        <th>Expenses</th>
+                        <th>Purchases</th>
+                        <th>Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in daily_report %}
+                    <tr>
+                        <td>{{ row.date|date:"d/m/Y" }}</td>
+                        <td class="text-success">฿{{ row.sales }}</td>
+                        <td class="text-danger">฿{{ row.expenses }}</td>
+                        <td class="text-warning">฿{{ row.purchases }}</td>
+                        <td class="{% if row.profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            ฿{{ row.profit }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No report data
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

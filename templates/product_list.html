@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}รายการสินค้า{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-box"></i> รายการสินค้า</h2>
+    <a href="{% url 'product_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> เพิ่มสินค้า
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="get" class="row g-3 mb-3">
+            <div class="col-md-5">
+                <input type="text" name="search" class="form-control" placeholder="ค้นหาสินค้า (รหัส/ชื่อ)" value="{{ search }}">
+            </div>
+            <div class="col-md-4">
+                <select name="category" class="form-control">
+                    <option value="">ทุกหมวดหมู่</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> ค้นหา
+                </button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>รูป</th>
+                        <th>รหัส</th>
+                        <th>ชื่อสินค้า</th>
+                        <th>หมวดหมู่</th>
+                        <th>ราคาทุน</th>
+                        <th>ราคาขาย</th>
+                        <th>คงเหลือ</th>
+                        <th>สถานะ</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                            {% else %}
+                            <div style="width: 50px; height: 50px; background: #eee; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.code }}</td>
+                        <td><strong>{{ product.name }}</strong></td>
+                        <td>{{ product.category.name|default:"-" }}</td>
+                        <td>฿{{ product.cost_price|floatformat:2 }}</td>
+                        <td>฿{{ product.selling_price|floatformat:2 }}</td>
+                        <td>{{ product.stock_quantity }} {{ product.unit }}</td>
+                        <td>
+                            {% if product.is_low_stock %}
+                            <span class="badge bg-danger">ใกล้หมด</span>
+                            {% else %}
+                            <span class="badge bg-success">ปกติ</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'product_delete' product.pk %}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">ไม่พบสินค้า</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
